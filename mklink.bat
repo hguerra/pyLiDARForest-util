@@ -1,0 +1,2 @@
+MKLINK /J "E:\heitor.guerra\PycharmProjects\pyLiDARForest\app" "E:\heitor.guerra\PycharmProjects\pyLiDARForest-util"
+MKLINK /J "C:\Users\heitor.guerra\Documents\apps\cmder\bin" "E:\heitor.guerra\PycharmProjects\pyLiDARForest-util\env" 

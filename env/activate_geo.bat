@@ -1,0 +1,1 @@
+C:\Anaconda\Scripts\activate.bat C:\Anaconda\envs\geo

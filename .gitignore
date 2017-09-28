@@ -1,0 +1,24 @@
+# Python
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# PyCharm
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+
+# User-specific stuff:
+.idea/
+
+## File-based project format:
+*.iws
+
+# Visual Studio
+*.sln
+*.pyproj
+
+# User
+app/*
+*.output
+geoms.json
+geoms_duplicated.json
+transects_epsg.json
