@@ -16,4 +16,4 @@ SET PGPASSWORD=ebaeba18
 ::"%pg_bin%%dump%" -U eba -d eba -t "amazon_srtm" > "E:\heitor.guerra\db_backup\table\amazon_srtm.sql"
 
 :: Dump table to another database
-"%pg_bin%%dump%" -U eba -d eba -t "amazon_trmm" | "%pg_bin%%psql%" -U eba -d eba_amazon_test
+::"%pg_bin%%dump%" -U eba -d eba -t "amazon_trmm" | "%pg_bin%%psql%" -U eba -d eba_amazon_test

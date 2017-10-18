@@ -8,6 +8,7 @@ import traceback
 from multiprocessing import cpu_count, current_process, Process
 
 import pytaxize
+import re
 import unidecode
 
 from stuff.dbutils import dbutils
@@ -123,6 +124,13 @@ def get_data(table, key=None, where=None, limit=None):
     return res
 
 
+def get_last_value_from_sequence(seq):
+    db = get_connection()
+    last_value = db.getdata("SELECT last_value FROM {};".format(seq))[0][0]
+    db.close()
+    return last_value
+
+
 def levenshtein(str1, str2):
     if str1 != str2:
         m = len(str1)
@@ -208,21 +216,30 @@ def pretty_printer(elements, width=40, keys=("common_name", "family", "genus", "
                                    p[keys[2]].center(width, empty_space), p[keys[3]].center(width, empty_space)))
 
 
-def normalize(s, encoding="latin-1", replace_hyphen=False, replace_multiple_space=False, remove_prepositions=False):
+def normalize(s, encoding="latin-1", replace_hyphen=False, replace_multiple_space=False, remove_prepositions=False, join=False):
+    str_empty = ""
+    str_space = " "
+    single_quotation_marks = "'"
     if isinstance(s, str):
         s = unicode(s, encoding)
     s = unidecode.unidecode(s)
-
     s = s.strip().lower()
-    s = s.replace("'", "")
-    s = s.replace('"', "")
+
+    s = s.replace(single_quotation_marks, str_empty)
+    double_quotation_marks = '"'
+    s = s.replace(double_quotation_marks, str_empty)
     prepositions_pt = ("da", "das", "de", "do", "dos")
 
     if replace_hyphen:
-        s = s.replace("-", " ")
+        str_hyphen = "-"
+        s = s.replace(str_hyphen, str_space)
 
     if replace_multiple_space:
-        s = s.replace("  ", " ")
+        pattern_multiples_space = "\s\s+"
+        s = re.sub(pattern_multiples_space, str_space, s)
+
+    if join:
+        s = s.replace(str_space, str_empty)
 
     if remove_prepositions:
         compound_name = s.split()
@@ -230,8 +247,14 @@ def normalize(s, encoding="latin-1", replace_hyphen=False, replace_multiple_spac
             for i, name in enumerate(compound_name):
                 if name in prepositions_pt:
                     del compound_name[i]
-            s = " ".join(compound_name)
+            s = str_space.join(compound_name)
     return s
+
+
+def split_alphanumeric(s):
+    pattern_alphanumeric = r"([0-9]+)(.*)"
+    p = re.compile(pattern_alphanumeric)
+    return p.findall(s)
 
 
 def is_list_empty(in_list):
@@ -363,26 +386,46 @@ def insert_taxonomy(elements, nullvalue="na"):
 
 
 def each_measurements(elements, __sof__):
+    nodata = "na"
+    col_family = "Familia"
+    col_genus = "Genero"
+    col_species = "Especie"
+    col_tree_id = "N"
     for raw in elements:
         raw_id = raw["_id"]
         plot = normalize(raw["Parcela"])
-        tree_id = normalize(raw["N"])
         year = normalize(raw["Ano"])
         dap = normalize(raw["DAP"]).replace(",", ".")
         height = normalize(raw["Altura"]).replace(",", ".")
         raw_information_plot = normalize(raw["Obs_parcela"])
-        raw_information_height = normalize(raw["Alt_medida_estimada"])
+        raw_information_height = normalize(raw["Altura_medida_estimada"])
         raw_information_dead = normalize(raw["Morta"])
         raw_information_type = normalize(raw["Tipo"])
-        family = normalize(raw["Familia"])
-        genus = normalize(raw["Genero"])
-        species = normalize(raw["Especie"])
-        common_name = normalize(raw["Nome_comum"], replace_hyphen=True, replace_multiple_space=True,
-                                remove_prepositions=True)
+        common_name = normalize(raw["Nome_comum"], replace_hyphen=True, replace_multiple_space=True, remove_prepositions=True)
 
-        __sof__(raw_id, plot, tree_id, year, dap, height, raw_information_plot, raw_information_height,
-                raw_information_dead,
-                raw_information_type, family, genus, species, common_name)
+        family = nodata
+        genus = nodata
+        species = nodata
+        tree_id = nodata
+        raw_information_tree_id = nodata
+        if col_family in raw:
+            family = normalize(raw[col_family])
+        if col_genus in raw:
+            genus = normalize(raw[col_genus])
+        if col_species in raw:
+            species = normalize(raw[col_species])
+        if col_tree_id in raw:
+            tree_id = normalize(raw[col_tree_id], replace_hyphen=True, replace_multiple_space=True, join=True)
+            if tree_id.isalpha():
+                raw_information_tree_id = tree_id
+                tree_id = nodata
+            elif not tree_id.isdigit():
+                match = split_alphanumeric(tree_id)[0]
+                tree_id = match[0]
+                raw_information_tree_id = match[1]
+
+        __sof__(raw_id, plot, tree_id, year, dap, height, raw_information_plot, raw_information_tree_id,
+                raw_information_height, raw_information_dead, raw_information_type, family, genus, species, common_name)
 
 
 def check_common_name(elements, words=None, nullvalue="na"):
@@ -658,6 +701,116 @@ def insert_common_name(elements, words=None, nullvalue="", error_columm="error",
     insert_db(tablename, fields, data, nullvalue)
 
 
+def insert_measurements(elements, nullvalue="", nodata="na", height_measured="med", insert_information=True, last_information_id=None):
+    logging.info("Load family, genus and species from DB...")
+    data_family = get_data_id("family")
+    data_genus = get_data_id("genus")
+    data_species = get_data_id("species")
+    data_common_name = get_data_id("common_name")
+    data_common_name_all = get_data("common_name", key="id")
+    last_information_id = last_information_id or get_last_value_from_sequence("information_id_seq")
+
+    if insert_information:
+        data_information = []
+        tablename_information = "information"
+        fields_information = ("plot", "height", "dead", "type")
+        estimated = "ESTIMATED"
+        measured = "MEASURED"
+
+        def populate_insert_information(raw_id, plot, tree_id, year, dap, height, raw_information_plot, raw_information_tree_id,
+                raw_information_height, raw_information_dead, raw_information_type, family, genus, species, common_name):
+            information_plot = nullvalue
+            if raw_information_plot != nodata:
+                information_plot = raw_information_plot
+
+            information_height = estimated
+            if raw_information_height == height_measured:
+                information_height = measured
+
+            information_type = nullvalue
+            if raw_information_type != nodata:
+                information_type = raw_information_type
+
+            rec = {
+                fields_information[0]: information_plot,
+                fields_information[1]: information_height,
+                fields_information[2]: raw_information_dead != nodata,
+                fields_information[3]: information_type
+            }
+
+            data_information.append(rec)
+
+        each_measurements(elements, populate_insert_information)
+
+        logging.info("Inserting information...")
+        insert_db(tablename_information, fields_information, data_information, nullvalue)
+
+    data_measurements = []
+    tablename_measurements = "measurements"
+    fields_measurements = ("common_name_id", "family_id", "genus_id", "species_id", "information_id", "tree_id", "plot",
+                           "year", "dap", "height")
+
+    data_information = get_data("information", key="id", where="id > {}".format(last_information_id))
+
+    def populate_insert_measurements(raw_id, plot, tree_id, year, dap, height, raw_information_plot, raw_information_tree_id,
+                raw_information_height, raw_information_dead, raw_information_type, family, genus, species, common_name):
+
+        information_id = data_information[last_information_id + raw_id]["id"]
+
+        family_id = None
+        if family in data_family:
+            family_id = data_family[family]
+
+        genus_id = None
+        if genus in data_genus:
+            genus_id = data_genus[genus]
+
+        species_id = None
+        if species in data_species:
+            species_id = data_species[species]
+
+        common_name_id = None
+        for _id, row in data_common_name_all.iteritems():
+            if family_id == row["family_id"] and genus_id == row["genus_id"] and species_id == row["species_id"]:
+                common_name_id = _id
+                break
+
+        if not common_name_id and common_name in data_common_name:
+            common_name_id = data_common_name[common_name]
+
+        if tree_id == nodata:
+            tree_id = nullvalue
+
+        if year == nodata:
+            year = nullvalue
+
+        if dap == nodata:
+            dap = nullvalue
+
+        if height == nodata:
+            height = nullvalue
+
+        rec = {
+            fields_measurements[0]: common_name_id or nullvalue,
+            fields_measurements[1]: family_id or nullvalue,
+            fields_measurements[2]: genus_id or nullvalue,
+            fields_measurements[3]: species_id or nullvalue,
+            fields_measurements[4]: information_id,
+            fields_measurements[5]: tree_id,
+            fields_measurements[6]: plot,
+            fields_measurements[7]: year,
+            fields_measurements[8]: dap,
+            fields_measurements[9]: height,
+        }
+
+        data_measurements.append(rec)
+
+    each_measurements(elements, populate_insert_measurements)
+
+    logging.info("Inserting measurements")
+    insert_db(tablename_measurements, fields_measurements, data_measurements, nullvalue)
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     logging.info("Running script to populate 'simple_plotdata'")
@@ -717,5 +870,25 @@ if __name__ == '__main__':
     # path_measurements = r"E:\heitor.guerra\PycharmProjects\pyLiDARForest\app\db\simple_plotdata_ddl\data\Banco_nomes_INPA.csv"
     # raw_common_names, _ = csv_as_list(path_measurements, is_normalize=False)
     # insert_common_name(raw_common_names, words=spell_base, add=True)
+
+    path_measurements = r"E:\heitor.guerra\PycharmProjects\pyLiDARForest\app\db\simple_plotdata_ddl\data\TLO_2015_RESUMO.csv"
+    raw_measurements, _ = csv_as_list(path_measurements)
+    insert_measurements(raw_measurements)
+    # insert_measurements(raw_measurements, insert_information=False, last_information_id=6538)
+
+    # last_information_id = 6538
+    # def populate(raw_id, plot, tree_id, year, dap, height, raw_information_plot,
+    #                                  raw_information_tree_id,
+    #                                  raw_information_height, raw_information_dead, raw_information_type, family, genus,
+    #                                  species, common_name):
+    #
+    #     info_id = last_information_id + raw_id
+    #     info_tree_id = "'{}'".format(raw_information_tree_id)
+    #     if info_tree_id == "'na'":
+    #         info_tree_id = "NULL"
+    #
+    #     sql = "UPDATE information SET tree_id = {} WHERE id = {};".format(info_tree_id, info_id)
+    #     print(sql)
+    # each_measurements(raw_measurements, populate)
 
     logging.info("done.")

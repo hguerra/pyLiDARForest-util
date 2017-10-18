@@ -1,2 +1,2 @@
-C:\Anaconda\envs\geo\python.exe "E:\heitor.guerra\PycharmProjects\pyLiDARForest\app\builder\bat_timer.py" -t "19:00" -s "E:\heitor.guerra\PycharmProjects\pyLiDARForest\app\builder\exe\next\2_multi_thread_srtm.bat"
+C:\Anaconda\envs\geo\python.exe "E:\heitor.guerra\PycharmProjects\pyLiDARForest\app\builder\bat_timer.py" -t "19:00" -s "E:\heitor.guerra\PycharmProjects\pyLiDARForest\app\builder\exe\zonal_stats\app_multi_thread_zs_10.bat"
 echo "Completed in %time%"

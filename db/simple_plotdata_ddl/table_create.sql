@@ -123,14 +123,17 @@ CREATE TABLE public.measurements (
   owner_id         INTEGER          NOT NULL,
   information_id   INTEGER          NOT NULL,
   geo_reference_id INTEGER,
-  taxonomy_id      INTEGER,
   common_name_id   INTEGER,
+  family_id        INTEGER,
+  genus_id         INTEGER,
+  species_id       INTEGER,
   tree_id          INTEGER,
   plot             VARCHAR          NOT NULL,
   year             SMALLINT         NOT NULL,
   dap              DOUBLE PRECISION NOT NULL,
   height           REAL             NOT NULL,
   density          DOUBLE PRECISION,
+  density_sd       DOUBLE PRECISION,
   PRIMARY KEY (id)
 );
 
@@ -141,16 +144,22 @@ CREATE INDEX ON public.measurements
 CREATE INDEX ON public.measurements
 (information_id);
 CREATE INDEX ON public.measurements
-(taxonomy_id);
+(family_id);
+CREATE INDEX ON public.measurements
+(genus_id);
+CREATE INDEX ON public.measurements
+(species_id);
 CREATE INDEX ON public.measurements
 (common_name_id);
 
 CREATE TABLE public.information (
-  id     INTEGER NOT NULL DEFAULT nextval('information_id_seq' :: REGCLASS),
-  plot   VARCHAR,
-  height VARCHAR,
-  dead   BOOLEAN,
-  type   VARCHAR,
+  id      INTEGER NOT NULL DEFAULT nextval('information_id_seq' :: REGCLASS),
+  plot    VARCHAR,
+  tree_id VARCHAR,
+  height  VARCHAR,
+  dead    BOOLEAN,
+  type    VARCHAR,
+  density VARCHAR,
   PRIMARY KEY (id)
 );
 
@@ -185,7 +194,11 @@ ALTER TABLE public.common_name
   ADD CONSTRAINT FK_common_name__species_id FOREIGN KEY (species_id) REFERENCES public.species (id);
 
 ALTER TABLE public.measurements
-  ADD CONSTRAINT FK_measurements__taxonomy_id FOREIGN KEY (taxonomy_id) REFERENCES public.taxonomy (id);
+  ADD CONSTRAINT FK_measurements__family_id FOREIGN KEY (family_id) REFERENCES public.family (id);
+ALTER TABLE public.measurements
+  ADD CONSTRAINT FK_measurements__genus_id FOREIGN KEY (genus_id) REFERENCES public.genus (id);
+ALTER TABLE public.measurements
+  ADD CONSTRAINT FK_measurements__species_id FOREIGN KEY (species_id) REFERENCES public.species (id);
 ALTER TABLE public.measurements
   ADD CONSTRAINT FK_measurements__common_name_id FOREIGN KEY (common_name_id) REFERENCES public.common_name (id);
 ALTER TABLE public.measurements

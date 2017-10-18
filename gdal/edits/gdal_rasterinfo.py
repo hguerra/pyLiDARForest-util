@@ -8,7 +8,8 @@ gdal.UseExceptions()
 
 if __name__ == "__main__":
     # filename = r"E:\heitor.guerra\tests\extrapolar\EVI_max.tif"
-    filename = r"E:\heitor.guerra\tests\jorge\pft50y_area.nc"
+    # filename = r"E:\heitor.guerra\tests\jorge\pft50y_area.nc"
+    filename = r"E:\heitor.guerra\mask_hv.tif"
     src_ds = gdal.Open(filename, GA_ReadOnly)
 
     metadata = src_ds.GetMetadata()

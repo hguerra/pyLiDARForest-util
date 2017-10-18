@@ -70,14 +70,14 @@ def write(bat, lines, mode="w"):
                 logging.error("Error to append '{}': {}".format(line, str(writeErr)))
 
 
-def lines_warp(bouding_box, raster_path):
+def lines_warp(bouding_box, raster_path, nodata=-340282346638528859811704183484516925440.000000):
     rasters = files(raster_path, ".tif")
-    cmd = r'"C:\Anaconda\envs\geo\Library\bin\gdalwarp.exe" -q -cutline "{}" -crop_to_cutline -of GTiff "{}" "{}"'
-    line = lambda raster: cmd.format(bouding_box, raster, new_filename(raster, prefix="clipped_"))
+    cmd = r'"C:\Anaconda\envs\geo\Library\bin\gdalwarp.exe" -ot Float32 -dstnodata {} -q -cutline "{}" -crop_to_cutline -of GTiff "{}" "{}"'
+    line = lambda raster: cmd.format(str(nodata), bouding_box, raster, new_filename(raster, prefix="clipped_"))
     return [line(raster) for raster in rasters]
 
 
-def lines_merge(outputfile, raster_path, prefix=None, ext=".tif", batch=False, size=100, nodata=-9999):
+def lines_merge(outputfile, raster_path, prefix=None, ext=".tif", batch=False, size=100, nodata=-9999.0):
     interpreter = r"C:\Anaconda\envs\geo\python.exe"
     script = r"E:\heitor.guerra\PycharmProjects\pyLiDARForest\app\gdal\scripts\gdal_merge.py"
     cmd = r'{0} "{1}" -a_nodata {2} -of GTiff -o "{3}" {4}'
@@ -311,9 +311,9 @@ def gdalmerge_tiles(prefix, outputfile, path, ext="", batch=True):
     return lines_merge(outputfile, path, prefix=prefix, ext=ext, batch=batch)
 
 
-def gdalmerge_grid(file):
-    output = r"E:\heitor.guerra\db_backup\rasters\mosaic\{}.tif".format(file)
-    raster_path = r"E:\heitor.guerra\db_backup\rasters\{}".format(file)
+def gdalmerge_grid(file, raster_path, output):
+    output = output.format(file)
+    raster_path = raster_path.format(file)
     return lines_merge(output, raster_path, ext=".tif", nodata=-340282346638528859811704183484516925440.000000,
                        batch=False)
 
@@ -322,41 +322,41 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     bat_base = "E:\\heitor.guerra\\PycharmProjects\\pyLiDARForest\\app\\builder\exe\\"
 
-    # # gdalwarp
+    # gdalwarp
 
-    # bouding_box = r"E:\heitor.guerra\bouding_box_amazon\biome.shp"
+    # bouding_box = r"E:\heitor.guerra\bouding_box_amazon\mosaic_17.shp"
     # raster_path = r"E:\heitor.guerra\tests"
-    # bat = bat_base + "app_gdalwarp.bat"
+    # bat = bat_base + "soil.bat"
     # write(bat, lines_warp(bouding_box, raster_path))
     # write_multi_thread(bat)
 
-    # gdalmerge_tiles
+    # gdalmerge_grid
+    raster_path = r"E:\heitor.guerra\db_backup\rasters\test\{}"
+    output = r"E:\heitor.guerra\db_backup\rasters\test\{}.tif"
     # merges = (
-    #     # gdalmerge_grid("ndvi_mean") +
-    #     # gdalmerge_grid("ndvi_max") +
-    #     # gdalmerge_grid("ndvi_median") +
-    #     # gdalmerge_grid("ndvi_min") +
-    #     # gdalmerge_grid("ndvi_q1") +
-    #     # gdalmerge_grid("ndvi_q3") +
-    #     # gdalmerge_grid("evi_max")
-    #     # gdalmerge_grid("evi_mean") +
-    #     # gdalmerge_grid("evi_median") +
-    #     # gdalmerge_grid("evi_min") +
-    #     # gdalmerge_grid("evi_q1") +
-    #     # gdalmerge_grid("evi_q3") +
-    #     # gdalmerge_grid("evi_sd") +
-    #     # gdalmerge_grid("palsar_hhrhv") +
-    #     # gdalmerge_grid("palsar_hv") +
-    #     # gdalmerge_grid("palsar_hh") +
-    #     # gdalmerge_grid("trmm_median") +
-    #     # gdalmerge_grid("trmm_max") +
-    #     # gdalmerge_grid("trmm_min") +
-    #     # gdalmerge_grid("trmm_q1") +
-    #     # gdalmerge_grid("trmm_q3")
+    #     gdalmerge_grid("evi__max", raster_path, output) +
+    #     gdalmerge_grid("evi__mean", raster_path, output) +
+    #     gdalmerge_grid("evi__median", raster_path, output) +
+    #     gdalmerge_grid("evi__min", raster_path, output) +
+    #     gdalmerge_grid("evi__q1", raster_path, output) +
+    #     gdalmerge_grid("evi__q3", raster_path, output) +
+    #     gdalmerge_grid("evi__sd", raster_path, output) +
+    #     gdalmerge_grid("ndvi__max", raster_path, output) +
+    #     gdalmerge_grid("ndvi__mean", raster_path, output) +
+    #     gdalmerge_grid("ndvi__median", raster_path, output) +
+    #     gdalmerge_grid("ndvi__min", raster_path, output) +
+    #     gdalmerge_grid("ndvi__q1", raster_path, output) +
+    #     gdalmerge_grid("ndvi__q3", raster_path, output) +
+    #     gdalmerge_grid("ndvi__sd", raster_path, output)
     # )
     #
-    # bat = bat_base + "app_gdalmerge_random_forest.bat"
-    # write(bat, gdalmerge_grid("random_forest"))
+    # bat = bat_base + "app_gdalmerge.bat"
+    # write(bat, merges)
+
+    bat = bat_base + "app_gdalmerge.bat"
+    write(bat, gdalmerge_grid("__srtm", raster_path, output))
+
+    # gdalmerge_tiles
 
     # merges = (
     #     gdalmerge_tiles("N00", output, raster_path) +
@@ -396,14 +396,14 @@ if __name__ == "__main__":
     # write_multi_thread(bat, cores=10)
 
     # simple merge
-    # output_file = r"E:\heitor.guerra\db_backup\rasters\out.tif"
-    # raster_path = r"E:\heitor.guerra\db_backup\rasters\test"
-    # bat = bat_base + "simple_merge.bat"
+    # output_file = r"E:\heitor.guerra\db_backup\rasters\test\srtm.tif"
+    # raster_path = r"E:\heitor.guerra\db_backup\rasters\test\__srtm"
+    # bat = bat_base + "srtm.bat"
     # write(bat, lines_merge(output_file, raster_path))
 
     # reproject
 
-    # data_path = r"E:\heitor.guerra\DADOS_PARA_EXTRAPOLAR"
+    # data_path = r"E:\heitor.guerra\db_insert\zonal_stats\rasters\part_4"
     # ext = ".tif"
     # epsg = 5880
     # bat = bat_base + "app_reproject.bat"
@@ -431,15 +431,15 @@ if __name__ == "__main__":
 
     # zonal_stats_grid_parallel.py
 
-    boudingbox = r"amazon"
-    table = r"amazon_trmm_new"
-    raster_path = r"E:\heitor.guerra\db_insert\zonal_stats\rasters\part_3"
-    log_path = r"E:\heitor.guerra\db_insert\zonal_stats\log\extrapolar"
-    cores = 10
-    bat = bat_base + "zs_{}.bat".format(cores)
-
-    write(bat, lines_zonal_stats_parallel(boudingbox, table, raster_path, log_path, fid="fid", cores=cores * 20))
-    write_multi_thread(bat, cores=cores)
+    # boudingbox = r"amazon_srtm"
+    # table = r"amazon_palsar_hh_1"
+    # raster_path = r"E:\heitor.guerra\db_backup\rasters\test\palsar\zs"
+    # log_path = r"E:\heitor.guerra\db_backup\rasters\test\palsar"
+    # cores = 5
+    # bat = bat_base + "zs_{}.bat".format(cores)
+    #
+    # write(bat, lines_zonal_stats_parallel(boudingbox, table, raster_path, log_path, fid="fid", cores=cores))
+    # write_multi_thread(bat, cores=cores)
 
     # sql2pgdump
 
@@ -459,15 +459,14 @@ if __name__ == "__main__":
     # raster = r"E:\heitor.guerra\tests\extrapolar\EVI_max.tif"
     # output = r"E:\heitor.guerra\db_backup\rasters\test"
     # mosaic = "mosaic"
-    # table = "amazon"
+    # table = "amazon_trmm_new"
     # # attributes = ["evi_max", "evi_mean", "evi_median", "evi_min", "evi_q1", "evi_q3", "evi_sd",
-    # #               "ndvi_max", "ndvi_mean", "ndvi_median", "ndvi_min", "ndvi_q1", "ndvi_q3",
-    # #               "palsar_hh", "palsar_hhrhv1", "palsar_hv",
-    # #               "trmm_max", "trmm_median", "trmm_min", "trmm_q1", "trmm_q3"]
+    # #               "ndvi_max", "ndvi_mean", "ndvi_median", "ndvi_min", "ndvi_q1", "ndvi_q3", "ndvi_sd", "srtm"]
     # # attributes = ["random_forest"]
     # attributes = ["row"]
+    # # attributes = ["palsar_hh", "palsar_hv"]
     # write(bat, lines_extract_raster(table, mosaic, raster, output, log_path, attributes))
-    # write_multi_thread(bat)
+    # # write_multi_thread(bat)
 
     # Convert
     # data_path = r"E:\heitor.guerra\db_backup\rasters\mosaic"
