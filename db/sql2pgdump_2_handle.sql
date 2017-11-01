@@ -1,214 +1,25 @@
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 1 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
+DROP FUNCTION fupdate_amazon_biomass();
+CREATE OR REPLACE FUNCTION fupdate_amazon_biomass()
+  RETURNS VOID AS $$
+DECLARE
+    amazon_transects CURSOR FOR SELECT polys.* FROM amazon_palsar polys INNER JOIN transects bb ON ST_Intersects(bb.polyflown, polys.geom);
+BEGIN
+  FOR amazon IN amazon_transects LOOP
+    UPDATE amazon_palsar
+    SET agblongo_als_total = metric.agblongo_als_total,
+      agblongo_als_alive   = metric.agblongo_als_alive,
+      agblongo_tch_total   = metric.agblongo_tch_total,
+      agblongo_tch_alive   = metric.agblongo_tch_alive
+    FROM (SELECT
+            AVG(mt.agblongo_als_total) AS agblongo_als_total,
+            AVG(mt.agblongo_als_alive) AS agblongo_als_alive,
+            AVG(mt.agblongo_tch_total) AS agblongo_tch_total,
+            AVG(mt.agblongo_tch_alive) AS agblongo_tch_alive
+          FROM _metrics mt INNER JOIN amazon_palsar amz ON ST_Intersects(amz.geom, mt.geom)
+          WHERE amz.fid = amazon.fid AND mt.all_ > 500) AS metric
+    WHERE fid = amazon.fid;
+  END LOOP;
+END$$
+LANGUAGE plpgsql;
 
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 2 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 3 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 4 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 5 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 6 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 7 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 8 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 9 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 10 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 11 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 12 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 13 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 14 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 15 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 16 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 17 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 18 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 19 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 20 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 21 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 22 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 23 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 24 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 25 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 26 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 27 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 28 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 29 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-UPDATE amazon
-SET mosaic_id = ms.gid
-FROM mosaic ms
-WHERE ms.gid = 30 AND st_intersects(amazon.geom, ms.geom);
-COMMIT;
-
-BEGIN;
-ALTER TABLE amazon ADD CONSTRAINT amazon_mosaic_fkey FOREIGN KEY (mosaic_id) REFERENCES mosaic (gid);
-CREATE INDEX amazon_mosaic_index ON amazon (mosaic_id);
-COMMIT;
+SELECT fupdate_amazon_biomass();

@@ -16,5 +16,5 @@ SET PGPASSWORD=ebaeba18
 echo on
 
 :: Dump database
-::"%pg_bin%%dump%" -h localhost -p 5432 -U eba -F c -b -v -f "E:/heitor.guerra/db_backup/db/%BACKUP_FILE%" eba
-"%pg_bin%%dump%" -h localhost -p 5432 -U eba -F c -b -v -f "E:/heitor.guerra/db_backup/db/%BACKUP_FILE%" simple_plotdata
+"%pg_bin%%dump%" -h localhost -p 5432 -U eba -F c -b -v -f "E:/heitor.guerra/db_backup/db/%BACKUP_FILE%" eba
+"%pg_bin%%dump%" -h localhost -p 5432 -U eba -F c -b -v -f "E:/heitor.guerra/db_backup/db/palsar/%BACKUP_FILE%" palsar

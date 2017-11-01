@@ -214,7 +214,7 @@ def lines_zonal_stats_parcel(relation, vector, raster, log, vector_ext=".shp", r
 
 
 def lines_zonal_stats_parallel(boudingbox, table, raster_path, log_path, fid="ogc_fid", cores=8):
-    db = dbutils("localhost", "eba", "ebaeba18", "eba", "pg_default")
+    db = dbutils("localhost", "eba", "ebaeba18", "palsar", "pg_default")
 
     sql = "SELECT MIN({0}), MAX({0}), COUNT({0}) FROM {1};".format(fid, boudingbox)
     interpreter = r"C:\Anaconda\envs\geo\python.exe"
@@ -324,37 +324,53 @@ if __name__ == "__main__":
 
     # gdalwarp
 
-    # bouding_box = r"E:\heitor.guerra\bouding_box_amazon\mosaic_17.shp"
-    # raster_path = r"E:\heitor.guerra\tests"
-    # bat = bat_base + "soil.bat"
+    # bouding_box = r"E:\heitor.guerra\bouding_box_amazon\mosaic\mosaic_17.shp"
+    # raster_path = r"G:\SUB07_DADOS_BASE\PALSAR\PALSAR_2016\recorte_bioma_HH_HV"
+    # bat = bat_base + "clip.bat"
     # write(bat, lines_warp(bouding_box, raster_path))
     # write_multi_thread(bat)
 
     # gdalmerge_grid
-    raster_path = r"E:\heitor.guerra\db_backup\rasters\test\{}"
-    output = r"E:\heitor.guerra\db_backup\rasters\test\{}.tif"
+    # raster_path = r"E:\heitor.guerra\db_backup\rasters\test\{}"
+    # output = r"E:\heitor.guerra\db_backup\rasters\test\{}.tif"
     # merges = (
-    #     gdalmerge_grid("evi__max", raster_path, output) +
-    #     gdalmerge_grid("evi__mean", raster_path, output) +
-    #     gdalmerge_grid("evi__median", raster_path, output) +
-    #     gdalmerge_grid("evi__min", raster_path, output) +
-    #     gdalmerge_grid("evi__q1", raster_path, output) +
-    #     gdalmerge_grid("evi__q3", raster_path, output) +
-    #     gdalmerge_grid("evi__sd", raster_path, output) +
-    #     gdalmerge_grid("ndvi__max", raster_path, output) +
-    #     gdalmerge_grid("ndvi__mean", raster_path, output) +
-    #     gdalmerge_grid("ndvi__median", raster_path, output) +
-    #     gdalmerge_grid("ndvi__min", raster_path, output) +
-    #     gdalmerge_grid("ndvi__q1", raster_path, output) +
-    #     gdalmerge_grid("ndvi__q3", raster_path, output) +
-    #     gdalmerge_grid("ndvi__sd", raster_path, output)
+    #     # gdalmerge_grid("evi_max", raster_path, output) +
+    #     # gdalmerge_grid("evi_mean", raster_path, output) +
+    #     # gdalmerge_grid("evi_median", raster_path, output) +
+    #     # gdalmerge_grid("evi_min", raster_path, output) +
+    #     # gdalmerge_grid("evi_q1", raster_path, output) +
+    #     # gdalmerge_grid("evi_q3", raster_path, output) +
+    #     # gdalmerge_grid("evi_sd", raster_path, output) +
+    #     # gdalmerge_grid("ndvi_max", raster_path, output) +
+    #     # gdalmerge_grid("ndvi_mean", raster_path, output) +
+    #     # gdalmerge_grid("ndvi_median", raster_path, output) +
+    #     # gdalmerge_grid("ndvi_min", raster_path, output) +
+    #     # gdalmerge_grid("ndvi_q1", raster_path, output) +
+    #     # gdalmerge_grid("ndvi_q3", raster_path, output) +
+    #     # gdalmerge_grid("ndvi_sd", raster_path, output) +
+    #
+    #     # gdalmerge_grid("trmm_max", raster_path, output) +
+    #     # gdalmerge_grid("trmm_mean", raster_path, output) +
+    #     # gdalmerge_grid("trmm_median", raster_path, output) +
+    #     # gdalmerge_grid("trmm_min", raster_path, output) +
+    #     # gdalmerge_grid("trmm_q1", raster_path, output) +
+    #     # gdalmerge_grid("trmm_q3", raster_path, output) +
+    #     # gdalmerge_grid("trmm_sd", raster_path, output) +
+    #     # gdalmerge_grid("f_soil_qr", raster_path, output) +
+    #     # gdalmerge_grid("palsar_hh", raster_path, output) +
+    #     # gdalmerge_grid("palsar_hhrhv1", raster_path, output) +
+    #     # gdalmerge_grid("palsar_hv", raster_path, output) +
+    #     # gdalmerge_grid("vegetation", raster_path, output) +
+    #
+    #     gdalmerge_grid("palsar_hv", raster_path, output) +
+    #     gdalmerge_grid("palsar_hh", raster_path, output)
     # )
     #
     # bat = bat_base + "app_gdalmerge.bat"
     # write(bat, merges)
 
-    bat = bat_base + "app_gdalmerge.bat"
-    write(bat, gdalmerge_grid("__srtm", raster_path, output))
+    # bat = bat_base + "app_gdalmerge.bat"
+    # write(bat, gdalmerge_grid("__srtm", raster_path, output))
 
     # gdalmerge_tiles
 
@@ -403,14 +419,14 @@ if __name__ == "__main__":
 
     # reproject
 
-    # data_path = r"E:\heitor.guerra\db_insert\zonal_stats\rasters\part_4"
-    # ext = ".tif"
+    # data_path = r"G:\Analise_HIPERESPECTRAL\Dados\parcelas_campo"
+    # ext = ".shp"
     # epsg = 5880
     # bat = bat_base + "app_reproject.bat"
-    # write(bat, lines_reproject(data_path, ext, epsg, vector=False))
+    # write(bat, lines_reproject(data_path, ext, epsg, vector=True))
     # write_multi_thread(bat)
 
-    # zonal_stats_grid.py
+    # zonal_stats_grid.py\
 
     # table = r"vegtype_test"
     # raster_path = r"E:\heitor.guerra\tests\extrapolar"
@@ -431,15 +447,18 @@ if __name__ == "__main__":
 
     # zonal_stats_grid_parallel.py
 
-    # boudingbox = r"amazon_srtm"
-    # table = r"amazon_palsar_hh_1"
-    # raster_path = r"E:\heitor.guerra\db_backup\rasters\test\palsar\zs"
-    # log_path = r"E:\heitor.guerra\db_backup\rasters\test\palsar"
-    # cores = 5
-    # bat = bat_base + "zs_{}.bat".format(cores)
-    #
-    # write(bat, lines_zonal_stats_parallel(boudingbox, table, raster_path, log_path, fid="fid", cores=cores))
-    # write_multi_thread(bat, cores=cores)
+
+    # for i in xrange(1, 31):
+    #     boudingbox = r"tile_{}".format(str(i))
+    #     table = r"palsar_hh_{}".format(str(i))
+    #     raster_path = r"E:\heitor.guerra\db_insert\zonal_stats\rasters\part_5\2016\{}".format(str(i))
+    #     log_path = r"E:\heitor.guerra\db_insert\zonal_stats\log\palsar"
+    #     cores = 12
+    #     bat = bat_base + "palsar_{}.bat".format(str(i))
+    #     write(bat, lines_zonal_stats_parallel(boudingbox, table, raster_path, log_path, fid="gid", cores=cores))
+
+
+    # write_multi_thread("palsar.bat", cores=12)
 
     # sql2pgdump
 
@@ -453,22 +472,44 @@ if __name__ == "__main__":
     # bat = r"E:\heitor.guerra\PycharmProjects\pyLiDARForest\app\builder\exe\chm\fupdate_amazon_chm.bat"
     # write_run_sql(bat, table, command="SELECT fupdate_amazon_chm({});")
 
+    # Convert
+    # data_path = r"E:\heitor.guerra\db_backup\rasters\mosaic"
+    # bat = bat_base + "app_translate.bat"
+    # write(bat, lines_convert(data_path, ".tif", ".asc", "AAIGrid", vector=False))
+
     # Extract raster
     # bat = bat_base + "extract_raster.bat"
     # log_path = r"E:\heitor.guerra\db_backup\rasters\log"
     # raster = r"E:\heitor.guerra\tests\extrapolar\EVI_max.tif"
     # output = r"E:\heitor.guerra\db_backup\rasters\test"
     # mosaic = "mosaic"
-    # table = "amazon_trmm_new"
-    # # attributes = ["evi_max", "evi_mean", "evi_median", "evi_min", "evi_q1", "evi_q3", "evi_sd",
-    # #               "ndvi_max", "ndvi_mean", "ndvi_median", "ndvi_min", "ndvi_q1", "ndvi_q3", "ndvi_sd", "srtm"]
+    # table = "amazon_palsar"
+    # # attributes = ["trmm_max", "trmm_mean", "trmm_median", "trmm_min", "trmm_q1", "trmm_q3", "trmm_sd",
+    # #               "f_soil_qr", "vegetation", "palsar_hh", "palsar_hhrhv1", "palsar_hv"]
     # # attributes = ["random_forest"]
     # attributes = ["row"]
     # # attributes = ["palsar_hh", "palsar_hv"]
     # write(bat, lines_extract_raster(table, mosaic, raster, output, log_path, attributes))
-    # # write_multi_thread(bat)
+    # write_multi_thread(bat)
 
-    # Convert
-    # data_path = r"E:\heitor.guerra\db_backup\rasters\mosaic"
-    # bat = bat_base + "app_translate.bat"
-    # write(bat, lines_convert(data_path, ".tif", ".asc", "AAIGrid", vector=False))
+    # Extract raster
+    # bat = bat_base + "extract_raster.bat"
+    #
+    # log_template = r"E:\heitor.guerra\db_backup\rasters\log\{0}.log"
+    # # select_template = r"-- select palsar_hh_{0}, palsar_hv_{0},geom from palsar_hh_{0}"
+    # # attributes_template = r'"palsar_hh_{0}" "palsar_hv_{0}"'
+    # select_template = r"select (palsar_hh_{0} / palsar_hv_{0}) as palsar_hhrhv{0},geom from palsar_hh_{0}"
+    # attributes_template = r'"palsar_hhrhv{0}"'
+    # command_template = r'C:\Anaconda\envs\geo\python.exe "E:\heitor.guerra\PycharmProjects\pyLiDARForest\stuff\extract_raster.py" -d "palsar" -s "{}" -r "E:\heitor.guerra\tests\extrapolar\EVI_max.tif" -o "E:\heitor.guerra\db_backup\rasters\test" -b "" -a {} -l "{}"'
+    #
+    # lines = []
+    # for i in xrange(1, 31):
+    #     s = select_template.format(i)
+    #     a = attributes_template.format(i)
+    #     l = log_template.format(i)
+    #
+    #     c = command_template.format(s, a, l)
+    #     lines.append(c)
+    #
+    # write(bat, lines)
+    # write_multi_thread(bat)

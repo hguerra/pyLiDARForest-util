@@ -16,7 +16,7 @@ def multi_line_template(processorcores, verbose, inputfname):
 
 
 def line_template(metric_path, chm_path, log_path, metric_file, chm_file):
-    return 'C:\Anaconda\envs\geo\python.exe "E:\heitor.guerra\PycharmProjects\pyLiDARForest\stuff\importcsv2postgres.py" ' \
+    return 'C:\Anaconda\envs\geo\python.exe "E:\heitor.guerra\PycharmProjects\pyLiDARForest\stuff\importchm2postgres.py" ' \
            '"{metric_path}\{metric_file}" "{chm_path}\{chm_file}" ' \
            '-s "localhost" -u "eba" -p "ebaeba18" -t "metrics" -d "eba" -sf 3 -nv "-" ' \
            '-l "{log_path}\{metric_file}.log"'.format(metric_path=metric_path, chm_path=chm_path, log_path=log_path,
@@ -78,8 +78,8 @@ def write(bat, metric_path, chm_path, log_path, processorcores=14, verbose=1):
 if __name__ == "__main__":
     metric_path = r"E:\heitor.guerra\db_insert\metrics"
     chm_path = r"E:\heitor.guerra\db_insert\chm"
-    log_path = r"E:\heitor.guerra\db_insert"
-    bat = r"E:\heitor.guerra\PycharmProjects\pyLiDARForest\app\builder\exe\app_importcsv.bat"
+    log_path = r"E:\heitor.guerra\db_insert\metrics"
+    bat = r"E:\heitor.guerra\PycharmProjects\pyLiDARForest\app\builder\exe\app_importchmcsv.bat"
 
     logging.basicConfig(level=logging.INFO)
     write(bat, metric_path, chm_path, log_path)

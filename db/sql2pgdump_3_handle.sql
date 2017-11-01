@@ -1,0 +1,25 @@
+-- DROP FUNCTION public.fupdate_amazon_biomass_chm();
+-- CREATE OR REPLACE FUNCTION fupdate_amazon_biomass_chm()
+--   RETURNS VOID AS $$
+-- DECLARE
+--     intersection CURSOR FOR SELECT polys.*
+--                             FROM amazon_palsar polys INNER JOIN transects bb ON ST_Intersects(bb.polyflown, polys.geom);
+-- BEGIN
+--   FOR amazon IN intersection LOOP
+--     UPDATE amazon_palsar
+--     SET chm              = metric.avg_chm,
+--       agblongo_tch_total = metric.agblongo_tch_total,
+--       agblongo_tch_alive = metric.agblongo_tch_alive
+--     FROM (SELECT
+--             AVG(ch.chm)                AS avg_chm,
+--             AVG(ch.agblongo_tch_total) AS agblongo_tch_total,
+--             AVG(ch.agblongo_tch_alive) AS agblongo_tch_alive
+--           FROM chm ch INNER JOIN amazon_palsar amz ON ST_Intersects(amz.geom, ch.geom)
+--           WHERE amz.fid = amazon.fid and ch.chm < 60) AS metric
+--     WHERE fid = amazon.fid;
+--   END LOOP;
+-- END$$
+-- LANGUAGE plpgsql;
+
+-- Usage:
+SELECT fupdate_amazon_biomass_chm();

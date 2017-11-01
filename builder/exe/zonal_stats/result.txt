@@ -1,0 +1,138 @@
+ 7:42:11,29 
+ min |   max    |  count   
+-----+----------+----------
+   1 | 68629072 | 68629072
+(1 registro)
+
+ last_value 
+------------
+          1
+(1 registro)
+
+ count_processed 
+-----------------
+               0
+(1 registro)
+
+ count_max 
+-----------
+  68628840
+(1 registro)
+
+ count_mean 
+------------
+   68628840
+(1 registro)
+
+ count_median 
+--------------
+     68628840
+(1 registro)
+
+ count_min 
+-----------
+  68628840
+(1 registro)
+
+ count_q1 
+----------
+ 68628840
+(1 registro)
+
+ count_q3 
+----------
+ 68628840
+(1 registro)
+
+ count_sd 
+----------
+ 68628840
+(1 registro)
+
+ count_soil 
+------------
+   68628840
+(1 registro)
+
+ count_vegetation 
+------------------
+         68628840
+(1 registro)
+
+=============================================================================
+ 0:55:00,51 
+ min |   max    |  count   
+-----+----------+----------
+   1 | 68629072 | 68629072
+(1 registro)
+
+ last_value 
+------------
+          1
+(1 registro)
+
+ count_processed 
+-----------------
+               0
+(1 registro)
+
+ count_max 
+-----------
+  68628840
+(1 registro)
+
+ count_mean 
+------------
+   68628840
+(1 registro)
+
+ count_median 
+--------------
+     68628840
+(1 registro)
+
+ count_min 
+-----------
+  68597650
+(1 registro)
+
+ count_q1 
+----------
+ 68628840
+(1 registro)
+
+ count_q3 
+----------
+ 68628840
+(1 registro)
+
+ count_sd 
+----------
+ 68628840
+(1 registro)
+
+ count_soil 
+------------
+   68628840
+(1 registro)
+
+ count_vegetation 
+------------------
+         68628840
+(1 registro)
+
+ count_palsar_hh 
+-----------------
+        67260406
+(1 registro)
+
+ palsar_hhrhv1 
+---------------
+      67260406
+(1 registro)
+
+ count_palsar_hv 
+-----------------
+        67260406
+(1 registro)
+
