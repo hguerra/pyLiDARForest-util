@@ -85,7 +85,8 @@ if __name__ == "__main__":
         "zs_std": "std",
         "zs_sum": "sum",
         "zs_count": "count",
-        "zs_area": "area"
+        "zs_area": "area",
+        "zs_cv": "cv"
     }
 
     write(args.file, columns, features(args.vectorpath, columns))

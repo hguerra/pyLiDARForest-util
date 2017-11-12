@@ -871,9 +871,9 @@ if __name__ == '__main__':
     # raw_common_names, _ = csv_as_list(path_measurements, is_normalize=False)
     # insert_common_name(raw_common_names, words=spell_base, add=True)
 
-    path_measurements = r"E:\heitor.guerra\PycharmProjects\pyLiDARForest\app\db\simple_plotdata_ddl\data\TLO_2015_RESUMO.csv"
-    raw_measurements, _ = csv_as_list(path_measurements)
-    insert_measurements(raw_measurements)
+    # path_measurements = r"E:\heitor.guerra\PycharmProjects\pyLiDARForest\app\db\simple_plotdata_ddl\data\TLO_2015_RESUMO.csv"
+    # raw_measurements, _ = csv_as_list(path_measurements)
+    # insert_measurements(raw_measurements)
     # insert_measurements(raw_measurements, insert_information=False, last_information_id=6538)
 
     # last_information_id = 6538

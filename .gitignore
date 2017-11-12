@@ -19,6 +19,7 @@
 # User
 app/*
 *.output
+*.pickle
 geoms.json
 geoms_duplicated.json
 transects_epsg.json

@@ -9,7 +9,9 @@ SET output="E:\heitor.guerra\mosaic_metrics"
 
 ::%pgsql2shp% -f "E:\heitor.guerra\db_select\CHM_NP_T-xxxx_amazon_trmm" -h localhost -u eba -P ebaeba18 eba "SELECT polys.* FROM amazon_trmm polys INNER JOIN transects bb ON ST_Intersects(bb.polyflown, polys.geom) WHERE chm IS NOT NULL;"
 
-%pgsql2shp% -f "E:\heitor.guerra\db_backup\rasters\ipcc\chm_rf_train_below_60" -h localhost -u eba -P ebaeba18 eba "select amz.chm, amz.agblongo_tch_alive as train_a, amz.agblongo_tch_total as train_t, st_centroid(amz.geom) as geom from amazon_palsar as amz WHERE amz.agblongo_tch_alive is not null;"
+::%pgsql2shp% -f "E:\heitor.guerra\db_backup\rasters\ipcc\chm_rf_train_below_60" -h localhost -u eba -P ebaeba18 eba "select amz.chm, amz.agblongo_tch_alive as train_a, amz.agblongo_tch_total as train_t, st_centroid(amz.geom) as geom from amazon_palsar as amz WHERE amz.agblongo_tch_alive is not null;"
+
+::%pgsql2shp% -f "E:\heitor.guerra\db_backup\rasters\ipcc\metrics_rf_train_below_60" -h localhost -u eba -P ebaeba18 eba "select amz.agblongo_als_alive as train_a, amz.agblongo_als_total as train_t, st_centroid(amz.geom) as geom from amazon as amz WHERE amz.agblongo_als_alive is not null;"
 
 ::%pgsql2shp% -f "E:\heitor.guerra\db_select\uncertainty" -h localhost -u eba -P ebaeba18 eba "SELECT agblongo_als_total as agb_als_t, agblongo_als_alive as agb_als_a, agblongo_tch_total as agb_tch_t, agblongo_tch_alive as agb_tch_a, elev_max, agb, se_repr, se_pred, se_cal, se_total, eps, geom FROM amazon_palsar_17;"
 
@@ -47,3 +49,15 @@ SET output="E:\heitor.guerra\mosaic_metrics"
 ::%pgsql2shp% -f "E:\heitor.guerra\db_select\mosaic_28" -h localhost -u eba -P ebaeba18 eba "SELECT * FROM mosaic WHERE gid = 28;"
 ::%pgsql2shp% -f "E:\heitor.guerra\db_select\mosaic_29" -h localhost -u eba -P ebaeba18 eba "SELECT * FROM mosaic WHERE gid = 29;"
 ::%pgsql2shp% -f "E:\heitor.guerra\db_select\mosaic_30" -h localhost -u eba -P ebaeba18 eba "SELECT * FROM mosaic WHERE gid = 30;"
+
+::%pgsql2shp% -f "E:\heitor.guerra\db_select\metrics_hiper_all" -h localhost -u eba -P ebaeba18 eba "SELECT * FROM metrics WHERE filename IN ('T-0639', 'T-0638', 'T-0416','T-0645','T-0317','T-0348','T-0357','T-0358','T-0374','T-0409');"
+::%pgsql2shp% -f "E:\heitor.guerra\db_select\metrics_hiper_0317" -h localhost -u eba -P ebaeba18 eba "SELECT * FROM metrics WHERE filename = 'T-0317';"
+::%pgsql2shp% -f "E:\heitor.guerra\db_select\metrics_hiper_0348" -h localhost -u eba -P ebaeba18 eba "SELECT * FROM metrics WHERE filename = 'T-0348';"
+::%pgsql2shp% -f "E:\heitor.guerra\db_select\metrics_hiper_0357" -h localhost -u eba -P ebaeba18 eba "SELECT * FROM metrics WHERE filename = 'T-0357';"
+::%pgsql2shp% -f "E:\heitor.guerra\db_select\metrics_hiper_0358" -h localhost -u eba -P ebaeba18 eba "SELECT * FROM metrics WHERE filename = 'T-0358';"
+::%pgsql2shp% -f "E:\heitor.guerra\db_select\metrics_hiper_0374" -h localhost -u eba -P ebaeba18 eba "SELECT * FROM metrics WHERE filename = 'T-0374';"
+::%pgsql2shp% -f "E:\heitor.guerra\db_select\metrics_hiper_0409" -h localhost -u eba -P ebaeba18 eba "SELECT * FROM metrics WHERE filename = 'T-0409';"
+::%pgsql2shp% -f "E:\heitor.guerra\db_select\metrics_hiper_0416" -h localhost -u eba -P ebaeba18 eba "SELECT * FROM metrics WHERE filename = 'T-0416';"
+::%pgsql2shp% -f "E:\heitor.guerra\db_select\metrics_hiper_0638" -h localhost -u eba -P ebaeba18 eba "SELECT * FROM metrics WHERE filename = 'T-0638';"
+::%pgsql2shp% -f "E:\heitor.guerra\db_select\metrics_hiper_0639" -h localhost -u eba -P ebaeba18 eba "SELECT * FROM metrics WHERE filename = 'T-0639';"
+::%pgsql2shp% -f "E:\heitor.guerra\db_select\metrics_hiper_0645" -h localhost -u eba -P ebaeba18 eba "SELECT * FROM metrics WHERE filename = 'T-0645';"

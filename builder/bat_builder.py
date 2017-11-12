@@ -412,14 +412,14 @@ if __name__ == "__main__":
     # write_multi_thread(bat, cores=10)
 
     # simple merge
-    # output_file = r"E:\heitor.guerra\db_backup\rasters\test\srtm.tif"
-    # raster_path = r"E:\heitor.guerra\db_backup\rasters\test\__srtm"
-    # bat = bat_base + "srtm.bat"
-    # write(bat, lines_merge(output_file, raster_path))
+    # output_file = r"E:\heitor.guerra\db_backup\rasters\test\evi_q3.tif"
+    # raster_path = r"E:\heitor.guerra\db_backup\rasters\test2"
+    # bat = bat_base + "evi_q3.bat"
+    # write(bat, lines_merge(output_file, raster_path, nodata=-340282346638528859811704183484516925440.000000))
 
     # reproject
 
-    # data_path = r"G:\Analise_HIPERESPECTRAL\Dados\parcelas_campo"
+    # data_path = r"E:\heitor.guerra\tests\shp"
     # ext = ".shp"
     # epsg = 5880
     # bat = bat_base + "app_reproject.bat"
@@ -470,7 +470,7 @@ if __name__ == "__main__":
     # SQL command
     # table = "transects"
     # bat = r"E:\heitor.guerra\PycharmProjects\pyLiDARForest\app\builder\exe\chm\fupdate_amazon_chm.bat"
-    # write_run_sql(bat, table, command="SELECT fupdate_amazon_chm({});")
+    # write_run_sql(bat, table, command="SELECT fupdate_amazon_biomass_chm({});")
 
     # Convert
     # data_path = r"E:\heitor.guerra\db_backup\rasters\mosaic"
@@ -483,12 +483,12 @@ if __name__ == "__main__":
     # raster = r"E:\heitor.guerra\tests\extrapolar\EVI_max.tif"
     # output = r"E:\heitor.guerra\db_backup\rasters\test"
     # mosaic = "mosaic"
-    # table = "amazon_palsar"
+    # table = "amazon"
     # # attributes = ["trmm_max", "trmm_mean", "trmm_median", "trmm_min", "trmm_q1", "trmm_q3", "trmm_sd",
     # #               "f_soil_qr", "vegetation", "palsar_hh", "palsar_hhrhv1", "palsar_hv"]
     # # attributes = ["random_forest"]
-    # attributes = ["row"]
-    # # attributes = ["palsar_hh", "palsar_hv"]
+    # # attributes = ["row"]
+    # attributes = ["evi_q1", "evi_q3"]
     # write(bat, lines_extract_raster(table, mosaic, raster, output, log_path, attributes))
     # write_multi_thread(bat)
 
