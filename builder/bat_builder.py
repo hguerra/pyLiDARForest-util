@@ -419,12 +419,12 @@ if __name__ == "__main__":
 
     # reproject
 
-    # data_path = r"E:\heitor.guerra\tests\shp"
-    # ext = ".shp"
-    # epsg = 5880
-    # bat = bat_base + "app_reproject.bat"
-    # write(bat, lines_reproject(data_path, ext, epsg, vector=True))
-    # write_multi_thread(bat)
+    data_path = r"G:\CAMPOS_DGPS\PARCELAS_SEPARADAS"
+    ext = ".shp"
+    epsg = 5880
+    bat = bat_base + "app_reproject.bat"
+    write(bat, lines_reproject(data_path, ext, epsg, vector=True))
+    write_multi_thread(bat)
 
     # zonal_stats_grid.py\
 
